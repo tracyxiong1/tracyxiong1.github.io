@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>熊乐写字的地方</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://tracyxiong1.github.io/"/>
+  <updated>2018-05-07T10:18:11.618Z</updated>
+  <id>https://tracyxiong1.github.io/</id>
+  
+  <author>
+    <name>tracyxiong1</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记一次微信小程序开发过程</title>
+    <link href="https://tracyxiong1.github.io/2018/04/30/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B/"/>
+    <id>https://tracyxiong1.github.io/2018/04/30/记一次微信小程序开发过程/</id>
+    <published>2018-04-30T07:00:45.000Z</published>
+    <updated>2018-05-07T10:18:11.618Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>最近闲来无事，花时间捣鼓了一下微信小程序。<br>微信小程序是个什么东东呢？看看官方对小程序的定义：  </p><blockquote><p>微信小程序是一种全新的连接用户与服务的方式，它可以在微信内被便捷地获取和传播，同时具有出色的使用体验。</p></blockquote><p>有几个词比较关键了：全新的方式、出色的用户体验。工程师的好奇心驱动，小程序和传统的 web 页有什么不一样可以达到这种效果呢？技术上如何实现呢？小程序究竟是 web 还是 native?带着诸多问题，开始了小程序的探索之旅。</p><a id="more"></a><h1 id="开发一个小程序"><a href="#开发一个小程序" class="headerlink" title="开发一个小程序"></a>开发一个小程序</h1><p>要想明白小程序到底是个什么东东，咱先动手开发一个小程序。开发步骤按照<a href="https://developers.weixin.qq.com/miniprogram/dev/index.html?t=2018413" target="_blank" rel="noopener">官方文档</a>说明操作即可，这里简单罗列下步骤。</p><h2 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h2><ol><li>申请账号, 点击 <a href="https://mp.weixin.qq.com/wxopen/waregister?action=step1" target="_blank" rel="noopener">https://mp.weixin.qq.com/wxopen/waregister?action=step1</a> 根据指引填写信息和提交相应的资料，注册自己的小程序帐号；</li><li>获取 AppId, 用自己的账号登录小程序后台管理平台，然后在菜单 “设置”-“开发设置” 中可以查看；</li><li>安装开发工具，前往 <a href="https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html?t=201853" target="_blank" rel="noopener">开发者工具下载页面</a>；</li><li>打开微信开发工具，创建项目，编码。 </li></ol><p>步骤比较粗略，如果不太明白的可以参照<a href="https://developers.weixin.qq.com/miniprogram/dev/index.html?t=2018413" target="_blank" rel="noopener">官方文档</a>, 图文并茂，非常详细。</p><h2 id="代码构成"><a href="#代码构成" class="headerlink" title="代码构成"></a>代码构成</h2><p>小程序包含了几种类型的文件：</p><ul><li>.json 后缀的 JSON 配置文件，如 app.json/project.config.json/page.json, 根据命名大致能猜到他们的作用，分别用于配置小程序、开发工具、页面配置</li><li>.wxml 后缀的 WXML 模板文件，可以简单理解为 web 开发中的 html, 他们定位很类似，都是用于表示页面的结构，但是在语法上还是有些不同，在写 html 的时候会经常用到 div/span, 但是在 wxml 中就没有这些标签，而是小程序官方提供的 view/text 等</li><li>.wxss 后缀的 WXSS 样式文件，可以简单理解为 web 开发中的 css, 都是用于描述元素样式，但是还是有一些不同需要注意：1) wxss 只支持部分 css 选择器；2) wxss 提供了新的单位 rpx, 该单位可以根据屏幕宽度进行自适应</li><li>.js 后缀的 JS 脚本逻辑文件，可以理解为 web 开发中 javascript, 基本一样，没有太大不同</li></ul><h2 id="Code-阶段"><a href="#Code-阶段" class="headerlink" title="Code 阶段"></a>Code 阶段</h2><p>明白了小程序代码结构之后说干就干，第一个小程序选择了天气预报这样一个简单实用的产品，code 前需要解决两个问题：</p><ol><li>产品/UI 设计，这块借鉴了主流天气 APP 的 UI，没有遇到太大问题；</li><li>数据接口，这块图快、省事，就没自己单独写 API 接口，调用的第三方接口，这块需要注意的是将自己请求的接口在小程序管理后台 - 开发设置 - 服务器域名进行配置，不然无法发送请求。<br>解决 UI 和接口的问题之后就可以愉快地写代码了，开发体验和主流的 MV* 框架差不多，数据驱动，通过数据响应式修改页面 UI, 之前有 react native/vue/react 开发经验，上手还是很快的，不过这块需要注意的是需要熟悉官方提供的组件和 API, 不能想当然的去使用 div/span，开发过程中可以使用开发者工具提供的预览功能，在真机上调试，真机上可以开启 debug 模式，开启之后会有一个 <a href="https://github.com/Tencent/vConsole" target="_blank" rel="noopener">vConsole</a>, 方便调试。</li></ol><p>完成之后的效果图。<br><img src="/2018/04/30/记一次微信小程序开发过程/screenshot.jpeg" alt="小程序截图"><br>这里就不展开如何写代码了，已经将这个项目的代码开源，托管于 <a href="https://github.com/tracyxiong1/cola-weather" target="_blank" rel="noopener">github</a> 上，感兴趣的同学可以在 <a href="https://github.com/tracyxiong1/cola-weather" target="_blank" rel="noopener">github</a> 上查看。</p><h2 id="上线"><a href="#上线" class="headerlink" title="上线"></a>上线</h2><p>步骤如下：</p><ol><li>使用开发者工具上传代码，然后填写版本号以及项目备注；</li><li>上传成功后，登录小程序管理后台 - “开发管理” - “开发版本” 就可以找到刚提交上传的版本；</li><li>选择你提交的版本提交审核，审核还是比较快的（有可能我的小程序比较简单，几个小时就好了）；</li><li>审核通过后，点击发布即可。</li></ol><p>上线后的小程序二维码，可以体验下。<br><img src="/2018/04/30/记一次微信小程序开发过程/qrcode.jpg" alt="小程序二维码"></p><h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>可以在小程序管理后台中查看运营数据，进行相应优化。</p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>体验了从 0 到 1 开发小程序之后，有一些感想：</p><ol><li>开发门槛低，对开发者友好，简单易上手，开发成本低；</li><li>用户体验不错，相较于 wap 页面拥有更流畅的体验，几乎和 native 体验差不多（iOS上的开发体验），加载速度快；    </li></ol><p>总的来说，小程序结合了 native 和 wap 的优点，还是大有可为的。”授人以鱼不如授人以渔“，后面再花时间专门介绍小程序的底层实现。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h1&gt;&lt;p&gt;最近闲来无事，花时间捣鼓了一下微信小程序。&lt;br&gt;微信小程序是个什么东东呢？看看官方对小程序的定义：  &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;微信小程序是一种全新的连接用户与服务的方式，它可以在微信内被便捷地获取和传播，同时具有出色的使用体验。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有几个词比较关键了：全新的方式、出色的用户体验。工程师的好奇心驱动，小程序和传统的 web 页有什么不一样可以达到这种效果呢？技术上如何实现呢？小程序究竟是 web 还是 native?带着诸多问题，开始了小程序的探索之旅。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="小程序" scheme="https://tracyxiong1.github.io/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>写在开始</title>
+    <link href="https://tracyxiong1.github.io/2018/03/28/%E5%86%99%E5%9C%A8%E5%BC%80%E5%A7%8B/"/>
+    <id>https://tracyxiong1.github.io/2018/03/28/写在开始/</id>
+    <published>2018-03-28T11:22:06.000Z</published>
+    <updated>2018-05-07T10:17:06.055Z</updated>
+    
+    <content type="html"><![CDATA[<p>时间过得挺快，一转眼参加工作将近三年了。<br>说来惭愧，大学时期的博客在参加工作后就很少更新了，不更新的原因总结下来一个字：懒。现在回想，大学时期驱动我写博客主要来自：</p><ol><li>巩固基础知识</li><li>研究新事物并将其记录下来，防止以后忘记</li><li>内心的成就感</li></ol><a id="more"></a><p>那段写博客的经历对我来说，确实产生一些比较实质性的回报：较同时期的同学前端基础更扎实，更宽阔的视野，校招拿到更多的 offer，拥有更多的选择权，内心得到无与伦比的充实感、愉悦，每天都过得很开心。<br>不过现在写博客的驱动力似乎和之前发生了变化，现在的我更期望有一个地方能将平时自己的思考记录下来。虽然平时自己想了很多东西，但是很多时候因为自己可能只是想想，后来并没有足够的动力去加以实践、贯彻、落实，过了一段时间再回顾，就会产生一种感觉：为什么当时没有将这些东西坚持下去，然后留给自己一丝愧疚和挫败感。<br>其实可以提供写字的平台有很多，微信、微博相对来说比较生活，不太适合发这种东西，知乎、简书太喧闹、公开，我更期望选择一个相对来说比较「安静」「舒适」的地方来记录这些东西，写一点自己想写的东西，记录一下自己心路历程、感想、技术分享&amp;发现。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;时间过得挺快，一转眼参加工作将近三年了。&lt;br&gt;说来惭愧，大学时期的博客在参加工作后就很少更新了，不更新的原因总结下来一个字：懒。现在回想，大学时期驱动我写博客主要来自：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;巩固基础知识&lt;/li&gt;
+&lt;li&gt;研究新事物并将其记录下来，防止以后忘记&lt;/li&gt;
+&lt;li&gt;内心的成就感&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="感想" scheme="https://tracyxiong1.github.io/tags/%E6%84%9F%E6%83%B3/"/>
+    
+  </entry>
+  
+</feed>
